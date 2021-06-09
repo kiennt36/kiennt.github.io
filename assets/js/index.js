@@ -15,13 +15,22 @@ const progress = $('#progress')
 const playlist = $('.playlist')
 
 const defaultImageUrl = './assets/img/logo.png'
+const PLAYER_KEY = 'Kiennt-player'
 
 const app = {
 	currentIndex: 0,
 	isPlaying: false,
 	isRandom: false,
 	isRepeat: false,
-	newOffsetProgress: 0,
+	newTime: 0,
+	config: JSON.parse(localStorage.getItem(PLAYER_KEY)) || {},
+	setConfig: function(key, value) {
+		this.config[key] = value
+		localStorage.setItem(
+			PLAYER_KEY,
+			JSON.stringify(this.config)
+		)
+	},
 
 	songs: [
 		{
@@ -121,6 +130,10 @@ const app = {
 			`url('${defaultImageUrl}')`
 
 		audio.src = currentSong.path
+
+		progress.value = 100
+
+		this.setConfig('currentIndex', this.currentIndex)
 		
 		// Xử lý song active không cần render lại
 		if(activeSong && songList.length > 0) {
@@ -133,8 +146,19 @@ const app = {
 		}
 	},
 
+	loadConfig: function() {
+		if(this.config !== null) {
+			this.currentIndex = this.config.currentIndex
+			this.isRandom = this.config.isRandom
+			this.isRepeat = this.config.isRepeat
+			this.newTime = this.config.newTime
+		}
+	},
+
 	render: function() {
 		const _this = this
+
+		// Render danh sánh bài hát ra view
 		const htmls = this.songs.map(function (song, index) {
 			return `
 				<div data-index="${index}" class="song ${index === _this.currentIndex ? 'active' : ''}">
@@ -217,15 +241,16 @@ const app = {
 
 		// Xử lý sự kiện khi update audio time current
 		audio.ontimeupdate = function() {
-			const newTime = audio.currentTime / audio.duration * 100
-			progress.value = newTime ? newTime : _this.newOffsetProgress
+			_this.newTime = audio.currentTime / audio.duration * 100
+			progress.value = _this.newTime
+			_this.setConfig('newTime', _this.newTime)
 		}
 
 		// Xử lý sự kiện khi moving progress
-		progress.addEventListener('change', function (e) {
-			_this.newOffsetProgress = audio.duration / 100 * e.target.value
-			audio.currentTime = _this.newOffsetProgress
-		})
+		progress.onchange = function (e) {
+			newOffsetProgress = audio.duration / 100 * e.target.value
+			audio.currentTime = newOffsetProgress
+		}
 
 		// Next song on click
 		nextBtn.onclick = function() {
@@ -253,24 +278,33 @@ const app = {
 		repeatBtn.onclick = function() {
 			_this.isRepeat = !_this.isRepeat
 			this.classList.toggle('active', _this.isRepeat)
+			_this.setConfig('isRepeat', _this.isRepeat)
 		}
 
 		// Random song on click
 		randomBtn.onclick = function() {
 			_this.isRandom = !_this.isRandom
 			this.classList.toggle('active', _this.isRandom)
+			_this.setConfig('isRandom', _this.isRandom)
 		}
 
 		// Sử lý sự kiện thay đổi active song in play list
 		playlist.onclick = function(e) {
+			const songActiveNode = e.target.closest('.song.active')
 			const songNode = e.target.closest('.song:not(.active)')
 			const optionSong = e.target.closest('.option')
+
+			if(songActiveNode !== null) {
+				_this.isPlaying = true
+				audio.play()
+			}
 
 			if(songNode || optionSong) {
 				if(songNode) {
 					_this.currentIndex = Number(songNode.dataset.index)
 					_this.loadCurrentSong()
 					audio.play()
+					CDRotate.play()
 				}
 			}
 
@@ -322,8 +356,11 @@ const app = {
 	},
 
 	start: function() {
+		this.loadConfig()
 		this.handleEvents()
 		this.loadCurrentSong()
+		randomBtn.classList.toggle('active', this.isRandom)
+		repeatBtn.classList.toggle('active', this.isRepeat)
 		this.render()
 	}
 }
