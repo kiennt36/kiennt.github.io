@@ -34,6 +34,12 @@ const app = {
 
 	songs: [
 		{
+			name: 'Trốn Tìm',
+			singer: 'Đen',
+			path: './assets/source/tron-tim.mp3',
+			image: './assets/img/tron-tim.jpg'
+		},
+		{
 			name: 'Nevada',
 			singer: 'Vicetone',
 			path: 'https://aredir.nixcdn.com/NhacCuaTui924/Nevada-Vicetone-4494556.mp3?st=_IjpS9u0LjapNgzm058wVw&e=1623143773',
