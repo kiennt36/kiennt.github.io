@@ -118,18 +118,17 @@ const app = {
 		const _this = this
 		const songList = $$('.song')
 		const activeSong = $('.song.active')
-		const currentSong = this.songs[this.currentIndex]
 
 		// Load thông tin bài hát hiện tại
 		heading.innerHTML = 
-			`${currentSong.name} - ${currentSong.singer}`
+			`${this.currentSong.name} - ${this.currentSong.singer}`
 		
 		cdThumb.style.backgroundImage =
-			currentSong.image !== '' ? 
-			`url('${currentSong.image}')` :
+			this.currentSong.image !== '' ? 
+			`url('${this.currentSong.image}')` :
 			`url('${defaultImageUrl}')`
 
-		audio.src = currentSong.path
+		audio.src = this.currentSong.path
 
 		progress.value = 100
 
@@ -147,12 +146,20 @@ const app = {
 	},
 
 	loadConfig: function() {
-		if(this.config !== null) {
+		if(Object.entries(this.config).length) {
 			this.currentIndex = this.config.currentIndex
 			this.isRandom = this.config.isRandom
 			this.isRepeat = this.config.isRepeat
 			this.newTime = this.config.newTime
 		}
+	},
+
+	defineProperty: function() {
+		Object.defineProperty(this, 'currentSong', {
+			get: function () {
+				return this.songs[this.currentIndex]
+			},
+		})
 	},
 
 	render: function() {
@@ -356,6 +363,7 @@ const app = {
 	},
 
 	start: function() {
+		this.defineProperty()
 		this.loadConfig()
 		this.handleEvents()
 		this.loadCurrentSong()
