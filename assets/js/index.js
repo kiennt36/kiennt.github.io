@@ -11,6 +11,8 @@ const prevBtn = $('.btn-prev')
 const nextBtn = $('.btn-next')
 const repeatBtn = $('.btn-repeat')
 const randomBtn = $('.btn-random')
+const currentTime = $('.progress-wrap .currentTime')
+const duration = $('.progress-wrap .duration')
 const progress = $('#progress')
 const playlist = $('.playlist')
 
@@ -23,6 +25,8 @@ const app = {
 	isRandom: false,
 	isRepeat: false,
 	newTime: 0,
+	timeEnd: 0,
+	newOffsetProgress: 0,
 	config: JSON.parse(localStorage.getItem(PLAYER_KEY)) || {},
 	setConfig: function(key, value) {
 		this.config[key] = value
@@ -136,8 +140,15 @@ const app = {
 
 		audio.src = this.currentSong.path
 
-		progress.value = 100
+		// Scroll heading khi length > 30 char
+		if(heading.innerText.length > 33) {
+			heading.classList.add('scroll')
 
+		}else {
+			heading.classList.remove('scroll')
+		}
+
+		// Lưu vị trí song hiện tại vào localStorage
 		this.setConfig('currentIndex', this.currentIndex)
 		
 		// Xử lý song active không cần render lại
@@ -153,10 +164,11 @@ const app = {
 
 	loadConfig: function() {
 		if(Object.entries(this.config).length) {
-			this.currentIndex = this.config.currentIndex
-			this.isRandom = this.config.isRandom
-			this.isRepeat = this.config.isRepeat
-			this.newTime = this.config.newTime
+			this.currentIndex = this.config.currentIndex ? this.config.currentIndex : 0
+			this.isRandom = this.config.isRandom ? this.config.isRandom : false
+			this.isRepeat = this.config.isRepeat ? this.config.isRepeat : false
+			this.newTime = this.config.newTime ? this.config.newTime : 0
+			this.timeEnd = this.config.timeEnd ? this.config.timeEnd : 0
 		}
 	},
 
@@ -173,6 +185,7 @@ const app = {
 
 		// Render danh sánh bài hát ra view
 		const htmls = this.songs.map(function (song, index) {
+
 			return `
 				<div data-index="${index}" class="song ${index === _this.currentIndex ? 'active' : ''}">
 		            <div
@@ -199,14 +212,14 @@ const app = {
 
 		// Xử lý CD quay / dừng
 		const CDRotate = cdThumb.animate([
-				{
-					transform: 'rotate(360deg)',
-				}
-			],
 			{
-				duration: 10000,
-				iterations: Infinity,
-			})
+				transform: 'rotate(360deg)',
+			}
+		],
+		{
+			duration: 10000,
+			iterations: Infinity,
+		})
 
 		CDRotate.pause()
 
@@ -241,6 +254,19 @@ const app = {
 			player.classList.toggle('playing', _this.isPlaying)
 		}
 
+		audio.onloadedmetadata = function () {
+			_this.timeEnd = audio.duration
+			_this.setConfig('timeEnd', _this.timeEnd)
+
+			const timeList = _this.convertSecToMin(_this.timeEnd)
+			const min = Number(timeList[0]) >= 10 ? 
+				Number(timeList[0]) : `0${Number(timeList[0])}`
+			const sec = Number(timeList[1]) >= 10 ? 
+				Number(timeList[1]) : `0${Number(timeList[1])}`
+
+			duration.innerText = `${min}:${sec}`
+		}
+
 		// Xử lý sự kiện khi audio pause
 		audio.onpause = function() {
 			_this.isPlaying = false
@@ -254,15 +280,25 @@ const app = {
 
 		// Xử lý sự kiện khi update audio time current
 		audio.ontimeupdate = function() {
-			_this.newTime = audio.currentTime / audio.duration * 100
+			_this.newTime = audio.currentTime / _this.timeEnd * 100
+			_this.newTime = _this.newTime
 			progress.value = _this.newTime
 			_this.setConfig('newTime', _this.newTime)
+
+			const timeList = _this.convertSecToMin(audio.currentTime)
+			// console.log(timeList)
+			const min = Number(timeList[0]) >= 10 ? 
+				Number(timeList[0]) : `0${Number(timeList[0])}`
+			const sec = Number(timeList[1]) >= 10 ? 
+				Number(timeList[1]) : `0${Number(timeList[1])}`
+
+			currentTime.innerText = `${min}:${sec}`
 		}
 
 		// Xử lý sự kiện khi moving progress
 		progress.onchange = function (e) {
-			newOffsetProgress = audio.duration / 100 * e.target.value
-			audio.currentTime = newOffsetProgress
+			_this.newOffsetProgress = _this.timeEnd / 100 * e.target.value
+			audio.currentTime = _this.newOffsetProgress
 		}
 
 		// Next song on click
@@ -273,6 +309,7 @@ const app = {
 				_this.nextSong()
 			}
 			_this.scroolToActiveSong()
+			_this.timeEnd = 0
 			audio.play()
 		}
 
@@ -284,6 +321,7 @@ const app = {
 				_this.prevSong()
 			}
 			_this.scroolToActiveSong()
+			_this.timeEnd = 0
 			audio.play()
 		}
 
@@ -368,6 +406,24 @@ const app = {
 		}, 300)
 	},
 
+	convertSecToMin: function(sec) {
+		sec = Math.floor(sec)
+		let min = 0
+		if(sec >= 60) {
+			min = sec / 60
+			min = min.toFixed(2).toString().split('.')
+			if(min[1] >= 60) {
+				console.log(sec, min)
+				min[0]++
+				min[1] = min[1] - 60
+			}
+			return min
+		}else {
+			return ['0', sec.toString()]
+
+		}
+	},
+
 	start: function() {
 		this.defineProperty()
 		this.loadConfig()
@@ -375,6 +431,8 @@ const app = {
 		this.loadCurrentSong()
 		randomBtn.classList.toggle('active', this.isRandom)
 		repeatBtn.classList.toggle('active', this.isRepeat)
+		const oldTime = this.timeEnd / 100 * this.newTime
+		audio.currentTime = oldTime
 		this.render()
 	}
 }
