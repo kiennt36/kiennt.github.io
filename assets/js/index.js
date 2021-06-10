@@ -351,6 +351,7 @@ const app = {
 			_this.isMute = false
 			audio.muted = _this.isMute
 			_this.currentVolume = 1
+			audio.volume = 1
 			sound.value = 100
 			volumeBtn[0].classList.remove('active')
 			volumeBtn[1].classList.add('active')
