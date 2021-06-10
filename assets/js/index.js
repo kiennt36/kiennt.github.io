@@ -265,9 +265,11 @@ const app = {
 				if(_this.isPlaying === false) {
 					audio.play()
 					_this.isPlaying = true
+					CDRotate.play()
 				}else {
 					audio.pause()
 					_this.isPlaying = false
+					CDRotate.pause()
 				}
 			}
 		}
