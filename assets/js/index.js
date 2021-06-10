@@ -14,6 +14,8 @@ const randomBtn = $('.btn-random')
 const currentTime = $('.progress-wrap .currentTime')
 const duration = $('.progress-wrap .duration')
 const progress = $('#progress')
+const sound = $('#sound')
+const volumeBtn = $$('.sound-section .sound-icon')
 const playlist = $('.playlist')
 
 const defaultImageUrl = './assets/img/logo.png'
@@ -27,6 +29,8 @@ const app = {
 	newTime: 0,
 	timeEnd: 0,
 	newOffsetProgress: 0,
+	currentVolume: 0,
+	isMute: false,
 	config: JSON.parse(localStorage.getItem(PLAYER_KEY)) || {},
 	setConfig: function(key, value) {
 		this.config[key] = value
@@ -140,6 +144,8 @@ const app = {
 
 		audio.src = this.currentSong.path
 
+		this.scroolToActiveSong()
+
 		// Scroll heading khi length > 30 char
 		if(heading.innerText.length > 33) {
 			heading.classList.add('scroll')
@@ -169,6 +175,7 @@ const app = {
 			this.isRepeat = this.config.isRepeat ? this.config.isRepeat : false
 			this.newTime = this.config.newTime ? this.config.newTime : 0
 			this.timeEnd = this.config.timeEnd ? this.config.timeEnd : 0
+			this.currentVolume = this.config.currentVolume ? this.config.currentVolume : 0
 		}
 	},
 
@@ -210,6 +217,9 @@ const app = {
 		const _this = this
 		const cdWidth = cd.offsetWidth
 
+		// Xử lý height dashbroad
+		$('.playlist').style.marginTop = ($('.dashboard').offsetHeight + 30) + 'px'
+
 		// Xử lý CD quay / dừng
 		const CDRotate = cdThumb.animate([
 			{
@@ -245,6 +255,20 @@ const app = {
 			else {
 				audio.pause()
 				CDRotate.pause()
+			}
+		}
+
+		// Xử lý sự kiện khi nhấn nút cách (space)
+		document.onkeypress = function(e) {
+			e.preventDefault()
+			if(e.keyCode === 32) {
+				if(_this.isPlaying === false) {
+					audio.play()
+					_this.isPlaying = true
+				}else {
+					audio.pause()
+					_this.isPlaying = false
+				}
 			}
 		}
 
@@ -295,6 +319,44 @@ const app = {
 			currentTime.innerText = `${min}:${sec}`
 		}
 
+		// Xử lý âm thanh audio
+		sound.onchange = function(e) {
+			audio.muted = false
+			audio.volume = this.value / 100
+			_this.currentVolume = audio.volume
+			if(Number.parseFloat(_this.currentVolume) === 1) {
+				volumeBtn[0].classList.remove('active')
+				volumeBtn[1].classList.add('active')
+			}else if(Number.parseFloat(_this.currentVolume) === 0) {
+				volumeBtn[0].classList.add('active')
+				volumeBtn[1].classList.remove('active')
+			}else {
+				volumeBtn[0].classList.remove('active')
+				volumeBtn[1].classList.remove('active')
+			}
+			_this.setConfig('currentVolume', _this.currentVolume)
+		}
+
+		volumeBtn[0].onclick = function() {
+			_this.isMute = true
+			audio.muted = _this.isMute
+			_this.currentVolume = 0
+			sound.value = 0
+			volumeBtn[0].classList.add('active')
+			volumeBtn[1].classList.remove('active')
+			_this.setConfig('currentVolume', _this.currentVolume)
+		}
+
+		volumeBtn[1].onclick = function() {
+			_this.isMute = false
+			audio.muted = _this.isMute
+			_this.currentVolume = 1
+			sound.value = 100
+			volumeBtn[0].classList.remove('active')
+			volumeBtn[1].classList.add('active')
+			_this.setConfig('currentVolume', _this.currentVolume)
+		}
+
 		// Xử lý sự kiện khi moving progress
 		progress.onchange = function (e) {
 			_this.newOffsetProgress = _this.timeEnd / 100 * e.target.value
@@ -308,7 +370,6 @@ const app = {
 			}else {
 				_this.nextSong()
 			}
-			_this.scroolToActiveSong()
 			_this.timeEnd = 0
 			audio.play()
 		}
@@ -320,7 +381,6 @@ const app = {
 			}else {
 				_this.prevSong()
 			}
-			_this.scroolToActiveSong()
 			_this.timeEnd = 0
 			audio.play()
 		}
@@ -413,7 +473,6 @@ const app = {
 			min = sec / 60
 			min = min.toFixed(2).toString().split('.')
 			if(min[1] >= 60) {
-				console.log(sec, min)
 				min[0]++
 				min[1] = min[1] - 60
 			}
@@ -429,11 +488,20 @@ const app = {
 		this.loadConfig()
 		this.handleEvents()
 		this.loadCurrentSong()
+		this.render()
 		randomBtn.classList.toggle('active', this.isRandom)
 		repeatBtn.classList.toggle('active', this.isRepeat)
-		const oldTime = this.timeEnd / 100 * this.newTime
-		audio.currentTime = oldTime
-		this.render()
+		sound.value = (this.currentVolume * 100)
+		audio.volume = this.currentVolume
+		audio.currentTime = this.timeEnd / 100 * this.newTime
+
+		if(this.currentVolume === 1) {
+			volumeBtn[0].classList.remove('active')
+			volumeBtn[1].classList.add('active')
+		}else if(this.currentVolume === 0) {
+			volumeBtn[0].classList.add('active')
+			volumeBtn[1].classList.remove('active')
+		}
 	}
 }
 

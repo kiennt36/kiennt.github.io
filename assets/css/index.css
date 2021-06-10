@@ -147,6 +147,9 @@ header h2.scroll {
   transition: opacity 0.2s;
   cursor: pointer;
 }
+.progress:hover {
+  height: 10px;
+}
 .progress:hover::-webkit-slider-thumb {
   background: var(--primary-color);
   box-shadow: -500px 0 0 500px var(--primary-color);
@@ -159,6 +162,30 @@ header h2.scroll {
   background: var(--primary-color);
   box-shadow: -500px 0 0 500px var(--primary-color);
 }
+
+.sound-section {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.sound-icon i {
+  font-size: 2rem;
+  cursor: pointer;
+  color: #333;
+}
+
+.sound-icon.active i {
+  color: var(--primary-color);
+}
+#sound {
+  outline: 0;
+  border: 0;
+  border-radius: 500px;
+  width: 100%;
+  max-width: 100%;
+  transition: box-shadow 0.2s ease-in-out;
+}
+
 .playlist {
   padding: 12px;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
