@@ -18,7 +18,8 @@ const sound = $('#sound')
 const volumeBtn = $$('.sound-section .sound-icon')
 const playlist = $('.playlist')
 
-const defaultImageUrl = './assets/img/logo.png'
+const defaultImageUrl = './assets/img/'
+const defaultPathUrl = './assets/source/'
 const PLAYER_KEY = 'Kiennt-player'
 
 const app = {
@@ -44,81 +45,74 @@ const app = {
 		{
 			name: 'Trốn Tìm',
 			singer: 'Đen',
-			path: './assets/source/tron-tim.mp3',
-			image: './assets/img/tron-tim.jpg'
+			path: `${defaultPathUrl}tron-tim.mp3`,
+			image: `${defaultImageUrl}tron-tim.jpg`
 		},
 		{
-			name: 'Nevada',
-			singer: 'Vicetone',
-			path: 'https://aredir.nixcdn.com/NhacCuaTui924/Nevada-Vicetone-4494556.mp3?st=_IjpS9u0LjapNgzm058wVw&e=1623143773',
-			image: 'https://i.pinimg.com/originals/f8/6f/33/f86f3378e656883b33594f06d78d1634.jpg',
+			name: 'Chỉ Là Không Cùng Nhau (Live Version)',
+			singer: 'Tăng Phúc x Trương Thảo Nhi',
+			path: `${defaultPathUrl}chi-la-khong-cung-nhau(live-version).mp3`,
+			image: `${defaultImageUrl}chi-la-khong-cung-nhau(live-version).jpg`,
 		},
 		{
-			name: 'Light It Up',
-			singer: 'Robin Hustin x TobiMorrow',
-			path: 'https://aredir.nixcdn.com/NhacCuaTui968/LightItUp-RobinHustinTobimorrowJex-5619031.mp3?st=kzpVQ5kKnf2LlcAqM6lnxg&e=1623143881',
-			image: 'https://avatar-ex-swe.nixcdn.com/song/2019/01/08/1/3/d/a/1546913843457_640.jpg',
+			name: 'Hạ Còn Vương Nắng',
+			singer: 'DatKaa x Kido',
+			path: `${defaultPathUrl}ha-con-vuong-nang.mp3`,
+			image: `${defaultImageUrl}ha-con-vuong-nang.jpg`,
 		},
 		{
-			name: 'Yoru ni kakeru',
-			singer: 'YOASOBI',
-			path: 'https://aredir.nixcdn.com/NhacCuaTui992/YoruNiKakeru-YOASOBI-6149490.mp3?st=68hnFhtGF6RukKDcDcW9Mw&e=1623132179',
-			image: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/16788ee5-3436-474a-84fd-6616063a1a9a/de2f4eq-bc67fa17-8dae-46a9-b85d-fe8082c34841.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzE2Nzg4ZWU1LTM0MzYtNDc0YS04NGZkLTY2MTYwNjNhMWE5YVwvZGUyZjRlcS1iYzY3ZmExNy04ZGFlLTQ2YTktYjg1ZC1mZTgwODJjMzQ4NDEucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.dABuqANeQEs6FBfslZHdG1lW_gDwzf61yqiSABROSx0',
+			name: 'Tự Em Đa Tình (Phong DN Remix)',
+			singer: 'Quinn',
+			path: `${defaultPathUrl}tu-em-da-tinh(phong-dn-remix).mp3`,
+			image: `${defaultImageUrl}tu-em-da-tinh(phong-dn-remix).jpg`,
 		},
 		{
-			name: 'Muộn rồi mà sao còn',
-			singer: 'Sơn Tùng M-TP',
-			path: 'https://aredir.nixcdn.com/Believe_Audio19/MuonRoiMaSaoCon-SonTungMTP-7011803.mp3?st=w9AA-eyRI7yD_VYGfvVWeQ&e=1623141624',
-			image: 'https://pbs.twimg.com/media/Ez5jRyVVgAQN6Kh.jpg',
+			name: 'Tương Phùng',
+			singer: 'Long Nón Lá x The 199X',
+			path: `${defaultPathUrl}tuong-phung.mp3`,
+			image: `${defaultImageUrl}tuong-phung.jpg`,
 		},
 		{
-			name: 'See You Again',
-			singer: 'Charlie Puth ft Wiz Khalifa',
-			path: 'https://aredir.nixcdn.com/NhacCuaTui894/SeeYouAgain-KurtSchneiderEppicAlexGoot-3888930.mp3?st=1q73myBS8FKr8Rx0snpMJw&e=1623144094',
-			image: 'https://nghiennhac.com/wp-content/uploads/2020/09/see-you-again-0.jpg',
+			name: 'Tự Em Đa Tình',
+			singer: 'Quinn',
+			path: `${defaultPathUrl}tu-em-da-tinh.mp3`,
+			image: `${defaultImageUrl}tu-em-da-tinh.jpg`,
 		},
 		{
-			name: 'Shape of You',
-			singer: 'Ed Sheeran',
-			path: 'https://aredir.nixcdn.com/NhacCuaTui945/ShapeOfYou-AlexGootAndieCase-5076956.mp3?st=9I9Z2TBGWNOnQRfIJDomDA&e=1623138210',
-			image: 'https://is2-ssl.mzstatic.com/image/thumb/Music122/v4/09/a0/64/09a0641c-e5fa-407e-9829-47702358ec72/190295819972.jpg/1200x1200bf-60.jpg',
-		}
-		,
-		{
-			name: 'Symphony',
-			singer: 'Clean Bandit',
-			path: 'https://aredir.nixcdn.com/Sony_Audio37/Symphony-CleanBanditZaraLarsson-4822950.mp3?st=sPgJSXtRXYpT_rznXyez6g&e=1623144426',
-			image: 'https://i.ytimg.com/vi/PIf9GvWaxQQ/maxresdefault.jpg',
+			name: 'Lạc Lõng (Cô Độc Vương 3)',
+			singer: 'Thiên Tú',
+			path: `${defaultPathUrl}lac-long(co-doc-vuong-3).mp3`,
+			image: `${defaultImageUrl}lac-long(co-doc-vuong-3).jpg`,
 		},
 		{
-			name: 'Waiting For Love',
-			singer: 'Avicii',
-			path: 'https://aredir.nixcdn.com/Unv_Audio45/WaitingForLove-Avicii-4203283.mp3?st=mXGv6kIqbxg_coAyUqzlnw&e=1623144462',
-			image: 'https://i.ytimg.com/vi/Hmbm3G-Q444/maxresdefault.jpg',
+			name: 'Đừng Như Người Dưng',
+			singer: 'Nhật Phong',
+			path: `${defaultPathUrl}dung-nhu-nguoi-dung.mp3`,
+			image: `${defaultImageUrl}dung-nhu-nguoi-dung.jpg`,
 		},
 		{
-			name: 'Alone',
-			singer: 'Marshmello',
-			path: 'https://aredir.nixcdn.com/NhacCuaTui927/Alone-Marshmello-4456939.mp3?st=RTsMC9tNcKEi8fd0iKtdaA&e=1623144502',
-			image: 'https://i.ytimg.com/vi/UNB8F0ObA4g/maxresdefault.jpg',
+			name: 'Cô Độc Vương 2',
+			singer: 'Thiên Tú',
+			path: `${defaultPathUrl}co-doc-vuong-2.mp3`,
+			image: `${defaultImageUrl}co-doc-vuong-2.jpg`,
 		},
 		{
-			name: 'Something Just Like This',
-			singer: 'The Chainsmokers & Coldplay',
-			path: 'https://aredir.nixcdn.com/Sony_Audio39/SomethingJustLikeThis-TheChainsmokersColdplay-5337136.mp3?st=VQuH6VgNsPlBizbk-c7n3w&e=1623144556',
-			image: 'https://avatar-ex-swe.nixcdn.com/song/2017/11/07/a/1/4/5/1510038809679_640.jpg',
+			name: 'Cafe Không Đường',
+			singer: 'G5RSquad',
+			path: `${defaultPathUrl}cafe-khong-duong.mp3`,
+			image: `${defaultImageUrl}cafe-khong-duong.jpg`,
 		},
 		{
-			name: 'Vách Ngọc Ngà',
-			singer: 'Anh Rồng',
-			path: 'https://aredir.nixcdn.com/NhacCuaTui1013/VachNgocNga-AnhRong-6984991.mp3?st=KPdZ4Nh5CcZbkuVQaSMKqw&e=1623246976',
-			image: 'https://avatar-ex-swe.nixcdn.com/song/2021/03/25/0/b/f/e/1616662504016_500.jpg',
+			name: 'Thương Thầm (Lofi Version)',
+			singer: 'NB3 Hoài Bảo x Freak D',
+			path: `${defaultPathUrl}thuong-tham(loli-version).mp3`,
+			image: `${defaultImageUrl}thuong-tham(loli-version).jpg`,
 		},
 		{
-			name: 'Sugar',
-			singer: 'Maroon 5',
-			path: 'https://aredir.nixcdn.com/Unv_Audio73/Sugar-Maroon5-3338455.mp3?st=3FUWEyikJePPeAuREUcw9g&e=1623144644',
-			image: 'https://i.ytimg.com/vi/7vw84EkHOlY/maxresdefault.jpg',
+			name: 'Vách Ngọc Ngà (New Version)',
+			singer: 'G5RSquad x Phan Ann',
+			path: `${defaultPathUrl}vach-ngoc-nga-new-version.mp3`,
+			image: `${defaultImageUrl}vach-ngoc-nga-new-version.jpg`,
 		},
 		{
 			name: 'Quan Tài Hư',
@@ -140,7 +134,7 @@ const app = {
 		cdThumb.style.backgroundImage =
 			this.currentSong.image !== '' ? 
 			`url('${this.currentSong.image}')` :
-			`url('${defaultImageUrl}')`
+			`url('${defaultImageUrl}logo.png')`
 
 		audio.src = this.currentSong.path
 
@@ -197,7 +191,7 @@ const app = {
 				<div data-index="${index}" class="song ${index === _this.currentIndex ? 'active' : ''}">
 		            <div
 		                class="thumb"
-		                style="background-image: url('${song.image ? song.image : defaultImageUrl}');"
+		                style="background-image: url('${song.image ? song.image : defaultImageUrl + 'logo.png'}');"
 		            ></div>
 		            <div class="body">
 		                <h3 class="title">${song.name}</h3>
@@ -265,9 +259,11 @@ const app = {
 				if(_this.isPlaying === false) {
 					audio.play()
 					_this.isPlaying = true
+					CDRotate.play()
 				}else {
 					audio.pause()
 					_this.isPlaying = false
+					CDRotate.pause()
 				}
 			}
 		}
@@ -310,11 +306,10 @@ const app = {
 			_this.setConfig('newTime', _this.newTime)
 
 			const timeList = _this.convertSecToMin(audio.currentTime)
-			// console.log(timeList)
-			const min = Number(timeList[0]) >= 10 ? 
-				Number(timeList[0]) : `0${Number(timeList[0])}`
-			const sec = Number(timeList[1]) >= 10 ? 
-				Number(timeList[1]) : `0${Number(timeList[1])}`
+			const min = timeList[0] >= 10 ? 
+				timeList[0] : `0${timeList[0]}`
+			const sec = timeList[1] >= 10 ? 
+				timeList[1] : `0${timeList[1]}`
 
 			currentTime.innerText = `${min}:${sec}`
 		}
@@ -351,6 +346,7 @@ const app = {
 			_this.isMute = false
 			audio.muted = _this.isMute
 			_this.currentVolume = 1
+			audio.volume = 1
 			sound.value = 100
 			volumeBtn[0].classList.remove('active')
 			volumeBtn[1].classList.add('active')
@@ -358,8 +354,9 @@ const app = {
 		}
 
 		// Xử lý sự kiện khi moving progress
-		progress.onchange = function (e) {
-			_this.newOffsetProgress = _this.timeEnd / 100 * e.target.value
+		progress.onmouseup = function(e) {
+			this.value = e.layerX / this.offsetWidth * 100
+			_this.newOffsetProgress = _this.timeEnd / 100 * this.value
 			audio.currentTime = _this.newOffsetProgress
 		}
 
@@ -467,20 +464,10 @@ const app = {
 	},
 
 	convertSecToMin: function(sec) {
-		sec = Math.floor(sec)
-		let min = 0
-		if(sec >= 60) {
-			min = sec / 60
-			min = min.toFixed(2).toString().split('.')
-			if(min[1] >= 60) {
-				min[0]++
-				min[1] = min[1] - 60
-			}
-			return min
-		}else {
-			return ['0', sec.toString()]
+		const mins = Math.floor((sec % 3600) / 60)
+		const secs = Math.floor(sec % 60)
 
-		}
+		return [mins, secs]
 	},
 
 	start: function() {
