@@ -333,24 +333,35 @@ const app = {
 		}
 
 		volumeBtn[0].onclick = function() {
-			_this.isMute = true
-			audio.muted = _this.isMute
-			_this.currentVolume = 0
-			sound.value = 0
-			volumeBtn[0].classList.add('active')
+			_this.isMute = !_this.isMute
+			if(_this.isMute) {
+				audio.muted = _this.isMute
+				sound.value = 0
+				audio.volume = 0
+			}else {
+				audio.muted = false
+				sound.value = _this.currentVolume * 100
+				audio.volume = _this.currentVolume
+			}
+			if(_this.currentVolume === 0) 
+				volumeBtn[0].classList.add('active')
+			else
+				volumeBtn[0].classList.toggle('active', _this.isMute)
 			volumeBtn[1].classList.remove('active')
-			_this.setConfig('currentVolume', _this.currentVolume)
 		}
 
 		volumeBtn[1].onclick = function() {
 			_this.isMute = false
-			audio.muted = _this.isMute
-			_this.currentVolume = 1
-			audio.volume = 1
-			sound.value = 100
+			if(audio.volume === 0 || Number(sound.value) < 100) {
+				sound.value = 100
+				audio.volume = 1
+				volumeBtn[1].classList.add('active')
+			}else if(Number(sound.value) === 100) {
+				audio.volume = _this.currentVolume
+				sound.value = _this.currentVolume * 100
+				volumeBtn[1].classList.toggle('active', (Number(_this.currentVolume) === 1))
+			}
 			volumeBtn[0].classList.remove('active')
-			volumeBtn[1].classList.add('active')
-			_this.setConfig('currentVolume', _this.currentVolume)
 		}
 
 		// Xử lý sự kiện khi moving progress
