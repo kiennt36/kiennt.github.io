@@ -171,7 +171,7 @@ header h2.scroll {
 .sound-icon i {
   font-size: 2rem;
   cursor: pointer;
-  color: #333;
+  color: #666;
 }
 
 .sound-icon.active i {
