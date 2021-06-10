@@ -301,7 +301,7 @@ const app = {
 		// Xử lý sự kiện khi update audio time current
 		audio.ontimeupdate = function() {
 			_this.newTime = audio.currentTime / _this.timeEnd * 100
-			_this.newTime = _this.newTime
+			_this.newTime = _this.newTime ? _this.newTime : 0
 			progress.value = _this.newTime
 			_this.setConfig('newTime', _this.newTime)
 
