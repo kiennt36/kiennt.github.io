@@ -166,7 +166,7 @@ const app = {
 			this.isRepeat = this.config.isRepeat ? this.config.isRepeat : false
 			this.newTime = this.config.newTime ? this.config.newTime : 0
 			this.timeEnd = this.config.timeEnd ? this.config.timeEnd : 0
-			this.currentVolume = this.config.currentVolume ? this.config.currentVolume : 0
+			this.currentVolume = this.config.currentVolume ? this.config.currentVolume : 1
 		}
 	},
 
@@ -359,6 +359,12 @@ const app = {
 				volumeBtn[1].classList.toggle('active', (Number(_this.currentVolume) === 1))
 			}
 			volumeBtn[0].classList.remove('active')
+		}
+
+		progress.onchange = function(e) {
+			this.value = e.target.value
+			_this.newOffsetProgress = _this.timeEnd / 100 * this.value
+			audio.currentTime = _this.newOffsetProgress
 		}
 
 		// Xử lý sự kiện khi moving progress

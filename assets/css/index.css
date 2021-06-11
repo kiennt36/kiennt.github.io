@@ -64,6 +64,10 @@ header > span {
   bottom: 0;
   width: 10%;
   background: linear-gradient(to left, #fff, transparent);
+  background: -webkit-linear-gradient(to left, #fff, transparent);
+  background: -moz-linear-gradient(to left, #fff, transparent);
+  background: -ms-linear-gradient(to left, #fff, transparent);
+  background: -o-linear-gradient(to left, #fff, transparent);
 }
 
 .heading-wrap h2 {
@@ -167,6 +171,13 @@ header > span {
   height: 6px;
   background: var(--primary-color);
   box-shadow: -500px 0 0 500px var(--primary-color);
+}
+
+.progress::-moz-range-thumb {
+  width: 12px;
+  height: 10px;
+  background: var(--primary-color);
+  cursor: pointer;
 }
 
 .sound-section {
