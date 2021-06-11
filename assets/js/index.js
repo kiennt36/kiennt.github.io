@@ -349,6 +349,8 @@ const app = {
 
 		volumeBtn[1].onclick = function() {
 			_this.isMute = false
+			audio.muted = _this.isMute
+			
 			if(audio.volume === 0 || Number(sound.value) < 100) {
 				sound.value = 100
 				audio.volume = 1
