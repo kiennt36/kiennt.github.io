@@ -17,6 +17,7 @@ const progress = $('#progress')
 const sound = $('#sound')
 const volumeBtn = $$('.sound-section .sound-icon')
 const playlist = $('.playlist')
+const songTitles = heading.querySelectorAll('.song-title-sub')
 
 const defaultImageUrl = './assets/img/'
 const defaultPathUrl = './assets/source/'
@@ -30,7 +31,7 @@ const app = {
 	newTime: 0,
 	timeEnd: 0,
 	newOffsetProgress: 0,
-	currentVolume: 0,
+	currentVolume: 1,
 	isMute: false,
 	config: JSON.parse(localStorage.getItem(PLAYER_KEY)) || {},
 	setConfig: function(key, value) {
@@ -128,8 +129,12 @@ const app = {
 		const activeSong = $('.song.active')
 
 		// Load thông tin bài hát hiện tại
-		heading.innerHTML = 
-			`${this.currentSong.name} - ${this.currentSong.singer}`
+		const textHeading = `${this.currentSong.name} - ${this.currentSong.singer}`
+		Array.from(songTitles).forEach(songTitle => {
+			return songTitle.innerText = textHeading
+		})
+
+		this.scrollHeading()
 		
 		cdThumb.style.backgroundImage =
 			this.currentSong.image !== '' ? 
@@ -139,14 +144,6 @@ const app = {
 		audio.src = this.currentSong.path
 
 		this.scroolToActiveSong()
-
-		// Scroll heading khi length > 30 char
-		if(heading.innerText.length > 33) {
-			heading.classList.add('scroll')
-
-		}else {
-			heading.classList.remove('scroll')
-		}
 
 		// Lưu vị trí song hiện tại vào localStorage
 		this.setConfig('currentIndex', this.currentIndex)
@@ -481,6 +478,27 @@ const app = {
 		return [mins, secs]
 	},
 
+	scrollHeading: function() {
+		heading.style.transform = ""
+		heading.style.transition = ""
+
+		if(songTitles[0].offsetWidth > heading.offsetWidth) {
+			songTitles[1].style.display = "inline"
+  			songTitles[0].style.marginRight = '30px'
+			heading.style.transform = `translateX(-${songTitles[0].offsetWidth + 30}px)`
+			heading.style.transition = `transform 5.3s linear 1s`
+			heading.style.justifyContent = "flex-start"
+		}
+		else {
+			songTitles[1].style.display = "none"
+  			songTitles[0].style.marginRight = '0'
+			heading.style.justifyContent = "center"
+			heading.style.transform = ""
+			heading.style.transition = ""
+		}
+
+	},
+
 	start: function() {
 		this.defineProperty()
 		this.loadConfig()
@@ -504,3 +522,7 @@ const app = {
 }
 
 app.start()
+
+setInterval(() => {
+	app.scrollHeading()
+}, 10000)

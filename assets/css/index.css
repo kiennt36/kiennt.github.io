@@ -47,29 +47,35 @@ header {
   margin-bottom: 10px;
 }
 
-header span {
+header > span {
   color: var(--primary-color);
-  font-size: 12px;
+  font-size: 1.2rem;
 }
 
-header h2 {
+.heading-wrap {
+  position: relative;
+}
+
+.heading-wrap::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 10%;
+  background: linear-gradient(to left, #fff, transparent);
+}
+
+.heading-wrap h2 {
   color: var(--text-color);
-  font-size: 20px;
+  font-size: 2rem;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 
-header h2.scroll {
+.song-title-sub {
   white-space: nowrap;
-  animation: scrollToLeft 10s linear infinite;
-}
-
-@keyframes scrollToLeft {
-  0% {
-    transform: translateX(100%);
-  }
-
-  100% {
-    transform: translateX(-100%);
-  }
 }
 
 .cd {
