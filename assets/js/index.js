@@ -23,6 +23,17 @@ const defaultImageUrl = './assets/img/'
 const defaultPathUrl = './assets/source/'
 const PLAYER_KEY = 'Kiennt-player'
 
+// loading page
+const loading = document.querySelector('.loading')
+const logos = document.querySelectorAll('#logo path')
+
+Array.from(logos).forEach(logo => {
+	logo.style.strokeDasharray = `${logo.getTotalLength()}px`
+	logo.style.strokeDashoffset = `${logo.getTotalLength()}px`
+})
+
+// end loading page
+
 const app = {
 	currentIndex: 0,
 	isPlaying: false,
@@ -33,6 +44,7 @@ const app = {
 	newOffsetProgress: 0,
 	currentVolume: 1,
 	isMute: false,
+	isOnMouseAndTouchOnProgress: false,
 	config: JSON.parse(localStorage.getItem(PLAYER_KEY)) || {},
 	setConfig: function(key, value) {
 		this.config[key] = value
@@ -194,8 +206,15 @@ const app = {
 		                <h3 class="title">${song.name}</h3>
 		                <p class="author">${song.singer}</p>
 		            </div>
-		            <div class="option">
+		            <div class="options">
 		                <i class="fas fa-ellipsis-h"></i>
+		                <div class="song-waves">
+							<span class="song-wave__col" style="--song-wave-index: 1"></span>
+							<span class="song-wave__col" style="--song-wave-index: 2"></span>
+							<span class="song-wave__col" style="--song-wave-index: 3"></span>
+							<span class="song-wave__col" style="--song-wave-index: 4"></span>
+							<span class="song-wave__col" style="--song-wave-index: 5"></span>
+						</div>
 		            </div>
 		        </div>
 			`
@@ -236,6 +255,8 @@ const app = {
 
 		// play song on click
 		playBtn.onclick = function() {
+			const songWaveCols = $$('.song.active .song-wave__col')
+
 			_this.isPlaying = !_this.isPlaying
 			player.classList.toggle('playing', _this.isPlaying)
 
@@ -247,10 +268,13 @@ const app = {
 				audio.pause()
 				CDRotate.pause()
 			}
+
+			_this.playSongWave(songWaveCols)
 		}
 
 		// Xử lý sự kiện khi nhấn nút cách (space)
 		document.onkeypress = function(e) {
+			const songWaveCols = $$('.song.active .song-wave__col')
 			e.preventDefault()
 			if(e.keyCode === 32) {
 				if(_this.isPlaying === false) {
@@ -262,6 +286,7 @@ const app = {
 					_this.isPlaying = false
 					CDRotate.pause()
 				}
+				_this.playSongWave(songWaveCols)
 			}
 		}
 
@@ -363,17 +388,30 @@ const app = {
 			volumeBtn[0].classList.remove('active')
 		}
 
-		progress.onchange = function(e) {
-			this.value = e.target.value
-			_this.newOffsetProgress = _this.timeEnd / 100 * this.value
-			audio.currentTime = _this.newOffsetProgress
+		// Xử lý khi tua nhạc
+        progress.oninput = function(e) {
+        	console.log(e.target.value)
+            _this.isOnMouseAndTouchOnProgress = false
+            if(!_this.isOnMouseAndTouchOnProgress) {
+	            if (audio.duration) {
+	                const seekTime = audio.duration / 100 * e.target.value
+	                audio.currentTime = seekTime
+	            }
+            }
+        }
+
+        progress.onmousestart = function(e) {
+			_this.isOnMouseAndTouchOnProgress = true
+		}
+		progress.onmouseup = function(e) {
+			_this.isOnMouseAndTouchOnProgress = true
 		}
 
-		// Xử lý sự kiện khi moving progress
-		progress.onmouseup = function(e) {
-			this.value = e.layerX / this.offsetWidth * 100
-			_this.newOffsetProgress = _this.timeEnd / 100 * this.value
-			audio.currentTime = _this.newOffsetProgress
+		progress.ontouchstart = function(e) {
+			_this.isOnMouseAndTouchOnProgress = true
+		}
+		progress.ontouchup = function(e) {
+			_this.isOnMouseAndTouchOnProgress = true
 		}
 
 		// Next song on click
@@ -383,8 +421,12 @@ const app = {
 			}else {
 				_this.nextSong()
 			}
+
+			const songWaveCols = $$('.song.active .song-wave__col')
 			_this.timeEnd = 0
 			audio.play()
+			_this.isPlaying = true
+			_this.playSongWave(songWaveCols)
 		}
 
 		// Prev song on click
@@ -394,8 +436,11 @@ const app = {
 			}else {
 				_this.prevSong()
 			}
+
+			const songWaveCols = $$('.song.active .song-wave__col')
 			_this.timeEnd = 0
 			audio.play()
+			_this.playSongWave(songWaveCols)
 		}
 
 		// Repeat song on click
@@ -425,10 +470,13 @@ const app = {
 
 			if(songNode || optionSong) {
 				if(songNode) {
+					_this.isPlaying = true
 					_this.currentIndex = Number(songNode.dataset.index)
 					_this.loadCurrentSong()
 					audio.play()
 					CDRotate.play()
+					const songWaveCols = $$('.song.active .song-wave__col')
+					_this.playSongWave(songWaveCols)
 				}
 			}
 
@@ -507,6 +555,14 @@ const app = {
 
 	},
 
+	playSongWave: function(songWaveCols) {
+		Array.from(songWaveCols).forEach((col, index) => {
+			col.style.animation = this.isPlaying ?
+			`growUpAni .5s ease infinite ${index * .2}s` :
+			`growUpAni .5s ease infinite ${index * .2}s, backToStartPointAni 1s ease forwards`
+		})
+	},
+
 	start: function() {
 		this.defineProperty()
 		this.loadConfig()
@@ -529,8 +585,16 @@ const app = {
 	}
 }
 
-app.start()
+document.addEventListener('DOMContentLoaded', () => {
+	setTimeout(() => {
+		loading.classList.add('hidden')
+		app.start()
+		setTimeout(() => {
+			loading.remove()
 
-setInterval(() => {
-	app.scrollHeading()
-}, 10000)
+			setInterval(() => {
+				app.scrollHeading()
+			}, 10000)
+		}, 2000)
+	}, 3000)
+})
